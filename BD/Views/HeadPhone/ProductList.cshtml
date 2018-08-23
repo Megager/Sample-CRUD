@@ -1,0 +1,112 @@
+﻿@using PagedList.Mvc
+@model PagedList.PagedList<BD.Models.ProductModel<DAL.Entities.HeadPhone>>
+
+@{
+    ViewBag.Title = "HeadPhones";
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+
+<h2>HEADPHONES</h2>
+<div class="row">
+    <div class="filters col-md-2">
+        <h3>FILTERS</h3>
+        <hr />
+        <h4>
+            Price:
+        </h4>
+        <div>
+            <input id="ex1" type="text" class="span2" value="" data-slider-min="@ViewBag.filter.MinPrice" data-slider-max="@ViewBag.filter.MaxPrice" data-slider-step="5" data-slider-value=@("[" + ViewBag.filter.SelectedMinPrice + "," + ViewBag.filter.SelectedMaxPrice + "]") />
+        </div>
+        <h4>
+            Trade Mark:
+        </h4>
+        <div class="select-list">
+            @Html.DropDownList("TradeMarks", ViewBag.filter.TradeMarks as SelectList)
+        </div>
+            <h4>
+            Type:
+        </h4>
+        <div class="select-list">
+            @Html.DropDownList("Types", ViewBag.filter.Types as SelectList)
+        </div>
+        <h4>
+            Scope:
+        </h4>
+        <div class="select-list">
+            @Html.DropDownList("Scopes", ViewBag.filter.Scopes as SelectList)
+        </div>
+        <h4>Filter frequency range:</h4>
+        <div>
+            <input id="ex2" type="text" class="span2" value="" data-slider-min="@ViewBag.filter.MinFrequencyRange" data-slider-max="@ViewBag.filter.MaxFrequencyRange" data-slider-step="5" data-slider-value=@("[" + ViewBag.filter.FilterMinFrequencyRange + "," + ViewBag.filter.FilterMaxFrequencyRange + "]")>
+        </div>
+        <div>
+            <button onclick="filter()" class="filter btn btn-default">Filter</button>
+        </div>
+    </div>
+    <div class="col-md-10">
+        @foreach (var headPhone in Model)
+        {
+            <div class="product col-xs-3">
+                <a class="absa" href="@Url.Action("Info", new {id = headPhone.ProductInfo.Id, productId = headPhone.Product.Id})"></a>
+                <label class="label label-default">Description:</label>
+                <h4 class="info">@headPhone.Product.Description</h4>
+                <label class="label label-default">Minimum frequency range:</label>
+                <h4 class="info">@headPhone.ProductInfo.MinFrequencyRange</h4>
+                <label class="label label-default">Maximum frequency range:</label>
+                <h4 class="info">@headPhone.ProductInfo.MaxFrequencyRange</h4>
+                <label class="label label-default">Scope:</label>
+                <h4 class="info">@headPhone.ProductInfo.Scope.Name</h4>
+                <label class="label label-default">Type:</label>
+                <h4 class="info">@headPhone.ProductInfo.Type.Name</h4>
+                <label class="label label-default">Trademark name:</label>
+                <h4 class="info">@headPhone.Product.TradeMark.Name</h4>
+                <label class="label label-default">Count:</label>
+                <h4 class="info">@headPhone.Product.Count</h4>
+                <label class="label label-default">Price:</label>
+                <h4 class="info">@headPhone.Product.Price</h4>
+            </div>
+        }
+    </div>
+    @if (!Model.HasNextPage && !Model.HasPreviousPage)
+    {
+        <div class="col-md-offset-2 col-md-10">
+            @Html.PagedListPager(Model, page => Url.Action("ProductList", new { page }))
+        </div>
+    }
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $("#ex1").slider({});
+        $("#ex2").slider({});
+
+        function filter() {
+            var prices = $("#ex1").val().replace("[", "").replace("]", "");
+            var minPrice = prices.split(",")[0];
+            var maxPrice = prices.split(",")[1];
+
+            var frequency = $("#ex2").val().replace("[", "").replace("]", "");
+            var minFrequency = frequency.split(",")[0];
+            var maxFrequency = frequency.split(",")[1];
+
+            $.ajax({
+                url: '@Url.Action("SaveFilter")',
+                data: {
+                    MinPrice: parseInt(minPrice),
+                    MaxPrice: parseInt(maxPrice),
+                    TradeMarkId: $("#TradeMarks").val(),
+                    ScopeId: $("#Scopes").val(),
+                    TypeId: $("#Types").val(),
+                    MaxFrequencyRange: parseInt(maxFrequency),
+                    MinFrequencyRange: parseInt(minFrequency)
+                },
+                success: function(){
+                    location.reload();
+                }
+            });
+        }
+    </script>
+}

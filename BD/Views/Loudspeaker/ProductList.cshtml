@@ -1,0 +1,108 @@
+﻿@using PagedList.Mvc
+@model PagedList.PagedList<BD.Models.ProductModel<DAL.Entities.Loudspeaker>>
+
+@{
+    ViewBag.Title = "Loudspeakers";
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+
+<h2>LOUDSPEAKERS</h2>
+<div class="row">
+    <div class="filters col-md-2">
+        <h3>FILTERS</h3>
+        <hr />
+        <h4>
+            Price:
+        </h4>
+        <div>
+            <input id="ex1" type="text" class="span2" value="" data-slider-min="@ViewBag.filter.MinPrice" data-slider-max="@ViewBag.filter.MaxPrice" data-slider-step="5" data-slider-value=@("[" + ViewBag.filter.SelectedMinPrice + "," + ViewBag.filter.SelectedMaxPrice + "]") />
+        </div>
+        <h4>
+            Trade Mark:
+        </h4>
+        <div class="select-list">
+            @Html.DropDownList("TradeMarks", ViewBag.filter.TradeMarks as SelectList)
+        </div>
+        <h4>
+            Sound System:
+        </h4>
+        <div class="select-list">
+            @Html.DropDownList("SoundSystems", ViewBag.filter.SoundSystems as SelectList)
+        </div>
+        <h4>
+            Minimum volume:
+        </h4>
+        <div>
+            <input id="ex2" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="@ViewBag.filter.MaxVolume" data-slider-step="10" data-slider-value="@ViewBag.filter.FilterMaxVolume" />    
+        </div>
+        <h4>
+            Number:
+        </h4>
+        <div class="select-list">
+            @Html.DropDownList("Numbers", ViewBag.filter.Numbers as SelectList)
+        </div>
+        <div>
+            <button onclick="filter()" class="filter btn btn-default">Filter</button>
+        </div>
+    </div>
+    <div class="col-md-10">
+        @foreach (var loudSpeaker in Model)
+        {
+            <div class="product col-xs-3">
+                <a class="absa" href="@Url.Action("Info", new {id = loudSpeaker.ProductInfo.Id, productId = loudSpeaker.Product.Id})"></a>
+                <label class="label label-default">Description:</label>
+                <h4 class="info">@loudSpeaker.Product.Description</h4>
+                <label class="label label-default">Number:</label>
+                <h4 class="info">@loudSpeaker.ProductInfo.Number</h4>
+                <label class="label label-default">Sound system:</label>
+                <h4 class="info">@loudSpeaker.ProductInfo.SoundSystem.Name</h4>
+                <label class="label label-default">Maximum volume:</label>
+                <h4 class="info">@loudSpeaker.ProductInfo.MaxVolume</h4>
+                <label class="label label-default">Trademark name:</label>
+                <h4 class="info">@loudSpeaker.Product.TradeMark.Name</h4>
+                <label class="label label-default">Count:</label>
+                <h4 class="info">@loudSpeaker.Product.Count</h4>
+                <label class="label label-default">Price:</label>
+                <h4 class="info">@loudSpeaker.Product.Price</h4>
+            </div>
+        }
+    </div>
+    @if (!Model.HasNextPage && !Model.HasPreviousPage)
+    {
+        <div class="col-md-offset-2 col-md-10">
+            @Html.PagedListPager(Model, page => Url.Action("ProductList", new { page }))
+        </div>
+    }
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $("#ex1").slider({});
+        $("#ex2").slider({});
+
+        function filter() {
+            var prices = $("#ex1").val().replace("[", "").replace("]", "");
+            var minPrice = prices.split(",")[0];
+            var maxPrice = prices.split(",")[1];
+
+            $.ajax({
+                url: '@Url.Action("SaveFilter")',
+                data: {
+                    MinPrice: parseInt(minPrice),
+                    MaxPrice: parseInt(maxPrice),
+                    TradeMarkId: $("#TradeMarks").val(),
+                    ScopeId: $("#Scopes").val(),
+                    SoundSystemId: $("#SoundSystems").val(),
+                    MaxVolume: parseInt($('#ex2').val()),
+                    Number: parseInt($('#Numbers').val())
+                },
+                success: function(){
+                    location.reload();
+                }
+            });
+        }
+    </script>
+}

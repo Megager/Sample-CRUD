@@ -1,0 +1,15 @@
+﻿@model IEnumerable<DAL.Entities.Mongo.Comment>
+@if (Model.Any())
+{
+    <div class="col-md-7 comments-title">Comments:</div>
+}
+@foreach (var comment in Model)
+{
+    <div class="col-md-7 comment">
+        <label class="label label-default">User:</label>
+        <h4>@comment.Name</h4>
+        <hr />
+        <h5 class="description">@comment.Text</h5>
+        <h6 class="date">@comment.CreatedDate</h6>
+    </div>
+}

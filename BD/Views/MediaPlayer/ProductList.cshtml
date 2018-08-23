@@ -1,0 +1,129 @@
+﻿@using PagedList.Mvc
+@model PagedList.PagedList<BD.Models.ProductModel<DAL.Entities.MediaPlayer>>
+
+@{
+    ViewBag.Title = "MediaPlayers";
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+
+<h2>MEDIAPLAYERS</h2>
+<div class="row">
+    <div class="filters col-md-2">
+        <h3>FILTERS</h3>
+        <hr />
+        <h4>
+            Price:
+        </h4>
+        <div>
+            <input id="ex1" type="text" class="span2" value="" data-slider-min="@ViewBag.filter.MinPrice" data-slider-max="@ViewBag.filter.MaxPrice" data-slider-step="5" data-slider-value=@("[" + ViewBag.filter.SelectedMinPrice + "," + ViewBag.filter.SelectedMaxPrice + "]") />
+        </div>
+        <h4>
+            Trade Mark:
+        </h4>
+        <div class="select-list">
+            @Html.DropDownList("TradeMarks", ViewBag.filter.TradeMarks as SelectList)
+        </div>
+        <h4>
+            Is Portable 
+            <input type="checkbox" id="checkbox">
+        </h4>
+        <h4>
+            Maximum resolutions:
+        </h4>
+        <div class="select-list">
+            @Html.DropDownList("MaxWidth", ViewBag.filter.WidthResolutions as SelectList, new {@class = "resol"}) x @Html.DropDownList("MaxHeight", ViewBag.filter.HeightResolutions as SelectList, new { @class = "resol" })
+        </div>
+        <h4>
+            Min memory:
+        </h4>
+        <div>
+            <input id="ex2" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="@ViewBag.filter.MaxMemory" data-slider-step="10" data-slider-value="@ViewBag.filter.Memory" />
+        </div>
+        <div>
+            <button onclick="filter()" class="filter btn btn-default">Filter</button>
+        </div>
+    </div>
+    <div class="col-md-10">
+        @foreach (var mediaPlayer in Model)
+        {
+            <div class="product col-xs-3">
+                <a class="absa" href="@Url.Action("Info", new {id = mediaPlayer.ProductInfo.Id, productId = mediaPlayer.Product.Id})"></a>
+                <label class="label label-default">Description:</label>
+                <h4 class="info">@mediaPlayer.Product.Description</h4>
+                <label class="label label-default">Memory</label>
+                <h4 class="info">@mediaPlayer.ProductInfo.Memory</h4>
+                <label class="label label-default">Is portable:</label>
+                <h4 class="info">@mediaPlayer.ProductInfo.IsPortable</h4>
+                <label class="label label-default">Resolution:</label>
+                <h4 class="info">@mediaPlayer.ProductInfo.MaxWidthResolution x @mediaPlayer.ProductInfo.MaxHeightResolution</h4>
+                <label class="label label-default">Trademark name:</label>
+                <h4 class="info">@mediaPlayer.Product.TradeMark.Name</h4>
+                <label class="label label-default">Count:</label>
+                <h4 class="info">@mediaPlayer.Product.Count</h4>
+                <label class="label label-default">Price:</label>
+                <h4 class="info">@mediaPlayer.Product.Price</h4>
+            </div>
+        }
+    </div>
+    @if (!Model.HasNextPage && !Model.HasPreviousPage)
+    {
+        <div class="col-md-offset-2 col-md-10">
+            @Html.PagedListPager(Model, page => Url.Action("ProductList", new { page }))
+        </div>
+    }
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $("#ex1").slider({});
+        $("#ex2").slider({});
+
+        $(document).ready(function() {
+            var checkbox = $('#checkbox')[0];
+            checkbox.indeterminate = "@(ViewBag.filter.IsPortable ?? "null")" === "False";
+            if (!checkbox.indeterminate) {
+                checkbox.checked = "@(ViewBag.filter.IsPortable ?? "null")" === 'True';
+            }
+        });
+
+        function filter() {
+            var isPortable;
+            var checkbox = $('#checkbox')[0];
+            debugger
+            if (checkbox.indeterminate) {
+                isPortable = false;
+            } else if (checkbox.checked) {
+                isPortable = true;
+            } else {
+                isPortable = null;
+            }
+            var prices = $("#ex1").val().replace("[", "").replace("]", "");
+            var minPrice = prices.split(",")[0];
+            var maxPrice = prices.split(",")[1];
+
+
+            $.ajax({
+                url: '@Url.Action("SaveFilter")',
+                data: {
+                    MinPrice: parseInt(minPrice),
+                    MaxPrice: parseInt(maxPrice),
+                    TradeMarkId: $("#TradeMarks").val(),
+                    Memory: parseInt($('#ex2').val()),
+                    MaximumResolution: $('#MaxWidth').val() + 'x' + $('#MaxHeight').val(),
+                    IsPortable: isPortable
+                },
+                success: function() {
+                    location.reload();
+                }
+            });
+        }
+
+        $('#checkbox').click(function() {
+            if (this.readOnly) this.checked = this.readOnly = false;
+            else if (!this.checked) this.readOnly = this.indeterminate = true;
+        });
+    </script>
+}

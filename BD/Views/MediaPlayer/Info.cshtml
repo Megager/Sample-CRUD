@@ -1,0 +1,89 @@
+﻿@using DAL.Entities
+@model BD.Models.ProductModel<DAL.Entities.MediaPlayer>
+@{
+    ViewBag.Title = "Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" id="id" value="@Model.Product.Id" />
+<h2>@Model.Product.Description</h2>
+<div class="col-md-9">
+    <label class="label label-default">Memory:</label>
+    <h4 class="info">@Model.ProductInfo.Memory</h4>
+    <label class="label label-default">IsPortable:</label>
+    <h4 class="info">@Model.ProductInfo.IsPortable</h4>
+    <label class="label label-default">Resolution:</label>
+    <h4 class="info">@Model.ProductInfo.MaxWidthResolution x @Model.ProductInfo.MaxHeightResolution</h4>
+    <label class="label label-default">Trademark name:</label>
+    <h4 class="info">@Model.Product.TradeMark.Name</h4>
+    <label class="label label-default">Count:</label>
+    <h4 class="info">@Model.Product.Count</h4>
+    <label class="label label-default">Price:</label>
+    <h4 class="info">@Model.Product.Price</h4>
+    <label class="label label-default">Average mark</label>
+    <h4 class="info">@Model.Mark</h4>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="row">
+            @Html.ActionLink("Buy MediaPlayer", "BuyProduct", new { id = Model.ProductInfo.Id }, new { @class = "btn" })
+        </div>
+    }
+</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="new-comment col-md-9">
+        <hr />
+        <h3>New comment</h3>
+        <input type="text" id="comment" />
+        <div>
+            <button class="add-comment-btn btn btn-info" onclick="addComment()">Add comment</button>
+        </div>
+    </div>
+
+    <div class="new-comment col-md-9">
+        <hr />
+        <h3>New mark</h3>
+        <select id="mark">
+            <option value="0">Not chosen</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <div>
+            <button class="add-comment-btn btn btn-info" onclick="addMark()">Add mark</button>
+        </div>
+    </div>
+}
+@{ Html.RenderPartial("Comments", Model.Comments);}
+@section scripts
+{
+    <script type="text/javascript">
+        function addComment() {
+            $.ajax({
+                url: '@Url.Action("AddComment")',
+                data: {
+                    ProductId: parseInt($('#id').val()),
+                    Description: $('#comment').val(),
+                },
+                success: function () {
+                    location.reload();
+                }
+            });
+        }
+
+        function addMark() {
+            $.ajax({
+                url: '@Url.Action("AddMark")',
+                data: {
+                    ProductId: parseInt($('#id').val()),
+                    Mark: parseInt($('#mark').val())
+                },
+                success: function () {
+                    location.reload();
+                }
+            });
+        }
+    </script>
+}
+

@@ -1,0 +1,144 @@
+﻿@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,100,700,500);
+
+body {
+    background:#F7F7F7;
+    color:#666666;
+    font-family: 'Roboto', sans-serif;
+    font-weight:100;
+}
+
+body{
+    width: 100%;
+    background: -webkit-linear-gradient(left, #22d686, #24d3d3, #22d686, #24d3d3);
+    background: linear-gradient(to right, #22d686, #24d3d3, #22d686, #24d3d3);
+    background-size: 600% 100%;
+    -webkit-animation: HeroBG 20s ease infinite;
+    animation: HeroBG 20s ease infinite;
+}
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.form-group {
+    padding: 20px 0px;
+}
+
+.panel {
+    border-radius: 55px;
+    -webkit-transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+    -o-transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+    transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+.form-control {
+    margin: auto;
+}
+ul {
+     list-style-type: none;
+}
+.text-danger {
+    font-weight: bold;
+}
+.product {
+    margin: 30px;
+    background: white;
+    border-radius: 15px; 
+    border: black 1px solid;
+}
+.main {
+    background: white;
+    border-radius: 15px;
+}
+.select-list {
+    margin: 30px 0;
+}
+.slider-horizontal {
+     width: 120px!important;
+     margin-bottom: 10px
+}
+.filters {
+    border: 1px black solid;
+    border-radius: 10px;
+    margin-right: -15px;
+    margin-left: 15px;
+}
+.slider-track {
+    height: 20px!important;
+}
+.filter {
+    width: 100%;
+    margin: 10px 0;
+}
+.nav {
+    width: 100%;
+}
+.float-right {
+    float: right!important;
+}
+.comment {
+    margin: 20px 0;
+    border-radius: 15px; 
+    border: 1px solid black;
+}
+.absa {
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+}
+.new-comment {
+    margin: 15px 0;
+}
+#comment {
+    width: 150px;
+    height: 100px;
+}
+#mark {
+    height: 20px;
+}
+.order {
+    margin: 15px 0;
+    border: 1px solid black;
+}
+.info {
+    border-bottom: 1px solid black;
+}
+hr {
+    border-top: 1px solid black;
+    margin-bottom: 0px;
+}
+.comments-title {
+    font-size: 20px;
+    font-weight: 900;
+    margin: 20px 0;
+}
+.date {
+    font-style: italic;
+}
+.mark {
+    font-weight: 900;
+}
+.description {
+    font-size: 18px;
+}
+.add-comment-btn {
+    margin: 15px 0;
+}
+.resol {
+    width: 55px!important;
+}

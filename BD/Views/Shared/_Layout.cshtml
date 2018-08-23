@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/slider.css")
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <ul class="nav navbar-nav">
+            <li class="@(Request.RawUrl.Contains("HeadPhone") || Request.Url.AbsoluteUri == "http://localhost:24446/" ?"active":"")"><a href="@Url.Action("ProductList", "HeadPhone")">Headphones</a></li>
+            <li class="@(Request.RawUrl.Contains("Loudspeaker")?"active":"")"><a href="@Url.Action("ProductList", "Loudspeaker")">Loudspeaker</a></li>
+            <li class="@(Request.RawUrl.Contains("MediaPlayer")?"active":"")"><a href="@Url.Action("ProductList", "MediaPlayer")">MediaPlayer</a></li>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <li class="@(Request.RawUrl.Contains("Orders")?"active":"")">@Html.ActionLink("My Orders", "MyOrders", "Login")</li>
+                <li class="float-right">@User.Identity.Name</li>
+                <li class="float-right">@Html.ActionLink("Log out", "LogOff", "Login")</li>
+            }else{
+                <li class="float-right">@Html.ActionLink("Log in", "Index", "Login")</li>
+            }
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <div class="main row">
+        <div class="col-md-12">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@Scripts.Render("~/Scripts/bootstrap-slider.min.js")
+<script type="text/javascript">
+    window.onbeforeunload = function() {
+        $.ajax({
+            url: '@Url.Action("SetLastUrl", "Login")',
+            data: {
+                url: window.location.href
+            } 
+        });
+    }
+</script>
+@RenderSection("scripts", required: false)
+</body>
+</html>
